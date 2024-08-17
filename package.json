@@ -1,0 +1,31 @@
+{
+  "name": "upcdatabase-proxy",
+  "version": "0.1.0",
+  "description": "An express based proxy for api.upcdatabase.org.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node ."
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Helmare/upcdatabase-proxy.git"
+  },
+  "keywords": [
+    "http",
+    "api",
+    "proxy",
+    "upc",
+    "database",
+    "upcdatabase.org"
+  ],
+  "author": "Helmare",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Helmare/upcdatabase-proxy/issues"
+  },
+  "homepage": "https://github.com/Helmare/upcdatabase-proxy#readme",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}
