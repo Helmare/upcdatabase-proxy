@@ -26,6 +26,8 @@
   },
   "homepage": "https://github.com/Helmare/upcdatabase-proxy#readme",
   "dependencies": {
+    "axios": "^1.7.4",
+    "dotenv": "^16.4.5",
     "express": "^4.19.2"
   }
 }
