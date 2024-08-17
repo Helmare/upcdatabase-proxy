@@ -7,16 +7,29 @@ dotenv.config();
 const host = process.env.UPCD_HOST || 'https://api.upcdatabase.org';
 const port = process.env.PORT || 3000;
 
+const proxyToken = process.env.PROXY_TOKEN;
+if (!proxyToken) {
+  console.error('Missing PROXY_TOKEN environment variable for authentication.');
+  process.exit(-1);
+}
+
 const app = express();
 app.use(async (req, res) => {
   try {
-    delete req.headers.host;
-    if (req.headers['authorization']) {
-      req.headers['Authorization'] = req.headers['authorization'];
-      delete req.headers['authorization'];
+    // Authenticate proxy.
+    if (req.headers['proxy-authorization'] != `Bearer ${proxyToken}`) {
+      console.warn(`${req.ip} | Failed proxy authentication`);
+      res.status(407).send({ success: false, error: "Proxy must be authenticated." });
+      return;
     }
 
-    console.log(`${req.method} ${host}${req.url}`);
+    // Fix header information.
+    req.headers['Authorization'] ||= req.headers['authorization'];
+    delete req.headers['authorization'];
+    delete req.headers.host;
+
+    // Pass request to upcdatabase.org
+    console.log(`${req.ip} | ${req.method} ${host}${req.url}`);
     const response = await axios({
       url: `${host}${req.url}`,
       method: req.method,
@@ -24,6 +37,7 @@ app.use(async (req, res) => {
       data: req.body
     });
 
+    // Send upcdatabase.org response.
     res.statusCode = response.status;
     res.statusMessage = response.statusText;
     res.send(response.data);
