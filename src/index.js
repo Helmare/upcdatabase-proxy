@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import axios from 'axios';
 
+const AUTH_HEADER = 'x-upcdp-authorization';
+
 // Get environment variables.
 dotenv.config();
 const host = process.env.UPCD_HOST || 'https://api.upcdatabase.org';
@@ -13,20 +15,21 @@ if (!proxyToken) {
   process.exit(-1);
 }
 
+
 const app = express();
 app.use(async (req, res) => {
   try {
     // Authenticate proxy.
-    if (req.headers['proxy-authorization'] != `Bearer ${proxyToken}`) {
-      console.warn(`${req.ip} | Failed proxy authentication`);
-      res.status(407).send({ success: false, error: "Proxy must be authenticated." });
+    if (req.headers[AUTH_HEADER] != `Bearer ${proxyToken}`) {
+      console.warn(`${req.ip} | Failed proxy authentication.`);
+      res.status(407).send({ success: false, error: "Failed proxy authentication." });
       return;
     }
 
     // Fix header information.
     req.headers['Authorization'] ||= req.headers['authorization'];
     delete req.headers['authorization'];
-    delete req.headers['proxy-authenticate'];
+    delete req.headers[AUTH_HEADER];
     delete req.headers.host;
 
     // Pass request to upcdatabase.org
@@ -50,4 +53,5 @@ app.use(async (req, res) => {
 
 app.listen(port, () => {
   console.log(`https://api.database.org proxy running on port ${port}`);
+  
 });
