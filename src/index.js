@@ -26,6 +26,7 @@ app.use(async (req, res) => {
     // Fix header information.
     req.headers['Authorization'] ||= req.headers['authorization'];
     delete req.headers['authorization'];
+    delete req.headers['proxy-authenticate'];
     delete req.headers.host;
 
     // Pass request to upcdatabase.org
