@@ -17,7 +17,7 @@ const app = express();
 app.use(async (req, res) => {
   try {
     // Authenticate proxy.
-    console.log(req.headers['proxy-authenticate']);
+    console.log(req.headers['proxy-authorization']);
     if (req.headers['proxy-authorization'] != `Bearer ${proxyToken}`) {
       console.warn(`${req.ip} | Failed proxy authentication`);
       res.status(407).send({ success: false, error: "Proxy must be authenticated." });
