@@ -17,11 +17,13 @@ const app = express();
 app.use(async (req, res) => {
   try {
     // Authenticate proxy.
+    console.log(req.headers['proxy-authenticate']);
     if (req.headers['proxy-authorization'] != `Bearer ${proxyToken}`) {
       console.warn(`${req.ip} | Failed proxy authentication`);
       res.status(407).send({ success: false, error: "Proxy must be authenticated." });
       return;
     }
+
 
     // Fix header information.
     req.headers['Authorization'] ||= req.headers['authorization'];
@@ -50,4 +52,5 @@ app.use(async (req, res) => {
 
 app.listen(port, () => {
   console.log(`https://api.database.org proxy running on port ${port}`);
+  console.log(`Use "proxy-authentication: Bearer ${proxyToken}" to authenticate.`);
 });
